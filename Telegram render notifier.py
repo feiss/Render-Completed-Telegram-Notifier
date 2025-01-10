@@ -62,7 +62,7 @@ def start_sequence(context):
     end = C.scene.frame_end
     total = end - start + 1
     message = f"_________\nStart render {filepath}\n({total} frames, {start}-{end}):"
-    telegram_send_message(context, message, false)
+    telegram_send_message(context, message, False)
 
 def render(context):
     C = bpy.context
@@ -71,7 +71,7 @@ def render(context):
     telegram_send_message(context, f"Frame {curr} finished", send_image)
 
 def render_cancel(context):
-    telegram_send_message(context, "Render cancelled!", false)
+    telegram_send_message(context, "Render cancelled!", False)
       
 
 
