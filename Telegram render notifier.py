@@ -23,19 +23,18 @@ def telegram_send_message(context, message, send_image):
     
     bot_token = bpy.context.preferences.addons[__name__].preferences.bot_token
     chat_id = bpy.context.preferences.addons[__name__].preferences.chat_id
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
 
+    if not send_image:
+        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        data = {
+            "chat_id": chat_id,
+            "text": message
+        }
+        response = requests.post(url, json=data)
+        if response.status_code != 200:
+            print("Could not send message to Telegram. Please check your preferences")
 
-    data = {
-        "chat_id": chat_id,
-        "text": message
-    }
-    response = requests.post(url, json=data)
-    print("Message sent")
-    if response.status_code != 200:
-        print("Could not send message to Telegram. Please check your preferences")
-
-    if send_image:        
+    else:        
         # Save rendered image to temporary file
         img_path = os.path.join(tempfile.gettempdir(), "render.png")
         bpy.data.images["Render Result"].save_render(img_path)
@@ -44,7 +43,7 @@ def telegram_send_message(context, message, send_image):
         url = f"https://api.telegram.org/bot{bot_token}/sendPhoto"
         data = {
             "chat_id": chat_id,
-            "caption": "Rendered image",
+            "caption": message,
         }
         files = {
             "photo": open(img_path, "rb"),
